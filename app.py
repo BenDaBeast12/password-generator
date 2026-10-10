@@ -44,6 +44,8 @@ HTML = """
     <meta name="robots" content="index, follow">
     <meta name="theme-color" content="#0f172a">
 
+    <meta name="google-site-verification" content="5iMg0IsWd16Ain6f7A1289I_mOG8PaDKDfBjyF7uig4" />
+
     <link rel="icon" type="image/svg+xml" href="/static/logo.svg">
 
     <style>
@@ -372,7 +374,8 @@ HTML = """
 <body>
     <main class="container">
         <div class="top-row">
-            <img class="logo" src="/static/logo.svg" alt="Password Generator logo">
+            <img class="logo" src="/static/logo.svg"
+                 alt="Password Generator logo">
 
             <div class="theme-switch">
                 <span id="theme-label">Dark mode</span>
@@ -439,7 +442,7 @@ HTML = """
                 >
 
                 <button type="button" id="copy-button"
-                    onclick="copyPassword()">Copy</button>
+                        onclick="copyPassword()">Copy</button>
             </div>
 
             <p id="copy-status" aria-live="polite"></p>
@@ -481,7 +484,9 @@ HTML = """
         }
 
         try {
-            const savedTheme = localStorage.getItem("password-generator-theme");
+            const savedTheme = localStorage.getItem(
+                "password-generator-theme"
+            );
             setTheme(savedTheme === "light");
         } catch (error) {
             setTheme(false);
@@ -596,7 +601,6 @@ def home():
 
         elif strength == "medium":
             characters = string.ascii_letters + string.digits
-
             password_chars = [
                 secrets.choice(string.ascii_uppercase),
                 secrets.choice(string.ascii_lowercase),
