@@ -7,15 +7,38 @@ app = Flask(__name__)
 
 SPECIAL_CHARS = "!@#$%&*?"
 
+
+def get_strength_meter(password):
+    score = 0
+
+    if len(password) >= 12:
+        score += 1
+    if any(c.islower() for c in password) and any(c.isupper() for c in password):
+        score += 1
+    if any(c.isdigit() for c in password):
+        score += 1
+    if any(c in SPECIAL_CHARS for c in password):
+        score += 1
+
+    if score == 0:
+        return "Super weak", "weak", "10%"
+    elif score == 1:
+        return "Weak", "weak", "25%"
+    elif score == 2:
+        return "Normal", "medium", "45%"
+    elif score == 3:
+        return "Good", "medium", "70%"
+    else:
+        return "Very good", "strong", "100%"
+
+
 HTML = """
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Password Generator</title>
-
     <link rel="icon" type="image/svg+xml" href="/static/logo.svg">
 
     <style>
@@ -104,9 +127,10 @@ HTML = """
         }
 
         .switch input {
+            position: absolute;
             opacity: 0;
-            width: 0;
-            height: 0;
+            width: 1px;
+            height: 1px;
         }
 
         .switch-track {
@@ -161,8 +185,7 @@ HTML = """
         }
 
         select,
-        input[type="text"],
-        input[type="number"] {
+        input[type="text"] {
             width: 100%;
             min-width: 0;
             padding: 10px;
@@ -436,7 +459,6 @@ HTML = """
     </main>
 
     <script>
-        // Update the displayed length as the slider moves.
         const lengthSlider = document.getElementById("length");
         const lengthValue = document.getElementById("length-value");
 
@@ -444,7 +466,6 @@ HTML = """
             lengthValue.textContent = lengthSlider.value;
         });
 
-        // Remember the selected theme.
         const themeToggle = document.getElementById("theme-toggle");
         const themeLabel = document.getElementById("theme-label");
 
@@ -472,7 +493,6 @@ HTML = """
             }
         });
 
-        // Copy the generated password.
         async function copyPassword() {
             const field = document.getElementById("password-output");
             const status = document.getElementById("copy-status");
@@ -499,7 +519,6 @@ HTML = """
             }
         }
 
-        // Calculate the strength of the generated password.
         const password = document.getElementById("password-output").value;
         const label = document.getElementById("strength-label");
         const bar = document.getElementById("strength-bar");
@@ -560,10 +579,7 @@ def home():
             strength = "medium"
 
         try:
-            length = max(
-                5,
-                min(25, int(request.form.get("length", 12)))
-            )
+            length = max(5, min(25, int(request.form.get("length", 12))))
         except (ValueError, TypeError):
             length = 12
 
