@@ -38,7 +38,12 @@ HTML = """
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Password Generator</title>
+
+    <title>Free Password Generator | Custom Random Passwords</title>
+    <meta name="description" content="Generate random passwords from 5 to 25 characters. Choose your password type, check password strength, and copy your password instantly.">
+    <meta name="robots" content="index, follow">
+    <meta name="theme-color" content="#0f172a">
+
     <link rel="icon" type="image/svg+xml" href="/static/logo.svg">
 
     <style>
@@ -367,7 +372,7 @@ HTML = """
 <body>
     <main class="container">
         <div class="top-row">
-            <img class="logo" src="/static/logo.svg" alt="Logo">
+            <img class="logo" src="/static/logo.svg" alt="Password Generator logo">
 
             <div class="theme-switch">
                 <span id="theme-label">Dark mode</span>
@@ -379,7 +384,7 @@ HTML = """
             </div>
         </div>
 
-        <h1>Password Generator</h1>
+        <h1>Free Password Generator</h1>
 
         <form method="post">
             <label for="strength">Password type</label>
