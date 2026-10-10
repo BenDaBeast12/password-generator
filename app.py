@@ -5,6 +5,8 @@ import html
 
 app = Flask(__name__)
 
+SPECIAL_CHARS = "!@#$%&*?"
+
 
 @app.route("/", methods=["GET", "POST"])
 def home():
@@ -32,7 +34,7 @@ def home():
         elif strength == "medium":
             characters = string.ascii_letters + string.digits
 
-            # Guarantee 1 uppercase, 1 lowercase and 1 number
+            # At least 1 uppercase, 1 lowercase and 1 number
             password_chars = [
                 secrets.choice(string.ascii_uppercase),
                 secrets.choice(string.ascii_lowercase),
@@ -47,15 +49,15 @@ def home():
             characters = (
                 string.ascii_letters
                 + string.digits
-                + "!@#$%&*?"
+                + SPECIAL_CHARS
             )
 
-            # Guarantee 1 uppercase, 1 lowercase, 1 number and 1 symbol
+            # At least 1 uppercase, 1 lowercase, 1 number and 1 symbol
             password_chars = [
                 secrets.choice(string.ascii_uppercase),
                 secrets.choice(string.ascii_lowercase),
                 secrets.choice(string.digits),
-                secrets.choice("!@#$%&*?")
+                secrets.choice(SPECIAL_CHARS)
             ]
 
             password_chars.extend(
@@ -65,21 +67,16 @@ def home():
         secrets.SystemRandom().shuffle(password_chars)
         password = "".join(password_chars)
 
-    safe_password = html.escape(password)
+    safe_password = html.escape(password, quote=True)
 
     if password:
-        if strength == "easy":
-            meter_label = "Weak"
-            meter_class = "weak"
-        elif strength == "medium":
-            meter_label = "Moderate"
-            meter_class = "medium"
-        else:
-            meter_label = "Stronger"
-            meter_class = "strong"
+        meter_label, meter_class, meter_width = (
+            get_strength_meter(password)
+        )
     else:
         meter_label = "Generate a password"
         meter_class = ""
+        meter_width = "0%"
 
     return """
     <!DOCTYPE html>
@@ -97,11 +94,17 @@ def home():
             <h1>Password Generator</h1>
 
             <form method="post">
-                <label for="strength">Password strength</label>
+                <label for="strength">Password type</label>
                 <select name="strength" id="strength">
-                    <option value="easy" """ + ("selected" if strength == "easy" else "") + """>Easy</option>
-                    <option value="medium" """ + ("selected" if strength == "medium" else "") + """>Medium</option>
-                    <option value="hard" """ + ("selected" if strength == "hard" else "") + """>Hard</option>
+                    <option value="easy" """ + (
+                        'selected' if strength == 'easy' else ''
+                    ) + """>Easy</option>
+                    <option value="medium" """ + (
+                        'selected' if strength == 'medium' else ''
+                    ) + """>Medium</option>
+                    <option value="hard" """ + (
+                        'selected' if strength == 'hard' else ''
+                    ) + """>Hard</option>
                 </select>
 
                 <label for="length">Password length (5–10)</label>
@@ -129,7 +132,8 @@ def home():
                     <span id="strength-label" class=\"""" + meter_class + """\">""" + meter_label + """</span>
                 </div>
                 <div class="strength-track">
-                    <div id="strength-bar" class=\"""" + meter_class + """\"></div>
+                    <div id="strength-bar" class=\"""" + meter_class + """\"
+                         style="width: """ + meter_width + """"></div>
                 </div>
             </div>
         </div>
@@ -176,16 +180,24 @@ def home():
 
                 let level, cssClass, width;
 
-                if (score <= 1) {
+                if (score === 0) {
+                    level = "Super weak";
+                    cssClass = "weak";
+                    width = "10%";
+                } else if (score === 1) {
                     level = "Weak";
                     cssClass = "weak";
-                    width = "33%";
-                } else if (score <= 2) {
-                    level = "Moderate";
+                    width = "25%";
+                } else if (score === 2) {
+                    level = "Normal";
                     cssClass = "medium";
-                    width = "66%";
+                    width = "45%";
+                } else if (score === 3) {
+                    level = "Good";
+                    cssClass = "medium";
+                    width = "70%";
                 } else {
-                    level = "Strong";
+                    level = "Very good";
                     cssClass = "strong";
                     width = "100%";
                 }
@@ -199,6 +211,32 @@ def home():
     </body>
     </html>
     """
+
+
+def get_strength_meter(password):
+    score = 0
+
+    if len(password) >= 8:
+        score += 1
+    if any(c.islower() for c in password) and any(
+        c.isupper() for c in password
+    ):
+        score += 1
+    if any(c.isdigit() for c in password):
+        score += 1
+    if any(c in SPECIAL_CHARS for c in password):
+        score += 1
+
+    if score == 0:
+        return "Super weak", "weak", "10%"
+    elif score == 1:
+        return "Weak", "weak", "25%"
+    elif score == 2:
+        return "Normal", "medium", "45%"
+    elif score == 3:
+        return "Good", "medium", "70%"
+    else:
+        return "Very good", "strong", "100%"
 
 
 if __name__ == "__main__":
