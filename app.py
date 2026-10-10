@@ -23,29 +23,24 @@ def home():
         except (ValueError, TypeError):
             length = 8
 
-        password_chars = []
-
         if strength == "easy":
             characters = string.ascii_lowercase
-
             password_chars = [
-                secrets.choice(characters)
-                for _ in range(length)
+                secrets.choice(characters) for _ in range(length)
             ]
 
         elif strength == "medium":
             characters = string.ascii_letters + string.digits
 
-            # Guarantee at least 2 uppercase letters and 1 number
+            # Guarantee 1 uppercase, 1 lowercase and 1 number
             password_chars = [
                 secrets.choice(string.ascii_uppercase),
-                secrets.choice(string.ascii_uppercase),
+                secrets.choice(string.ascii_lowercase),
                 secrets.choice(string.digits)
             ]
 
             password_chars.extend(
-                secrets.choice(characters)
-                for _ in range(length - 3)
+                secrets.choice(characters) for _ in range(length - 3)
             )
 
         else:
@@ -55,18 +50,18 @@ def home():
                 + "!@#$%&*?"
             )
 
-            # Guarantee at least 1 number and 1 special symbol
+            # Guarantee 1 uppercase, 1 lowercase, 1 number and 1 symbol
             password_chars = [
+                secrets.choice(string.ascii_uppercase),
+                secrets.choice(string.ascii_lowercase),
                 secrets.choice(string.digits),
                 secrets.choice("!@#$%&*?")
             ]
 
             password_chars.extend(
-                secrets.choice(characters)
-                for _ in range(length - 2)
+                secrets.choice(characters) for _ in range(length - 4)
             )
 
-        # Shuffle so the required characters aren't always at the start
         secrets.SystemRandom().shuffle(password_chars)
         password = "".join(password_chars)
 
@@ -204,10 +199,6 @@ def home():
     </body>
     </html>
     """
-
-
-if __name__ == "__main__":
-    app.run(debug=True)
 
 
 if __name__ == "__main__":
