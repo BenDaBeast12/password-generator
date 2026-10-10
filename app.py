@@ -121,10 +121,80 @@ def home():
         <title>Password Generator</title>
         <link rel="icon" type="image/svg+xml" href="/static/logo.svg">
         <link rel="stylesheet" href="/static/style.css">
+
+        <style>
+            body {
+                padding: 12px;
+            }
+
+            .container {
+                width: 100%;
+                max-width: 360px;
+                padding: 22px;
+                gap: 10px;
+            }
+
+            .container img {
+                width: 56px;
+                height: auto;
+            }
+
+            h1 {
+                font-size: 24px;
+                margin: 4px 0 8px;
+            }
+
+            form {
+                gap: 6px;
+            }
+
+            label {
+                font-size: 13px;
+                margin-bottom: 2px;
+            }
+
+            select,
+            input {
+                padding: 9px;
+                font-size: 14px;
+            }
+
+            button {
+                padding: 10px 12px;
+                font-size: 14px;
+            }
+
+            .result {
+                margin-top: 4px;
+            }
+
+            .password-row {
+                gap: 6px;
+            }
+
+            #copy-status {
+                min-height: 0;
+                margin: 3px 0;
+                font-size: 12px;
+            }
+
+            .strength-section {
+                margin-top: 4px;
+            }
+
+            .strength-heading {
+                font-size: 13px;
+                margin-bottom: 6px;
+            }
+
+            .strength-track {
+                height: 7px;
+            }
+        </style>
     </head>
     <body>
         <div class="container">
-            <img src="/static/logo.svg" alt="Logo" width="80">
+            <img src="/static/logo.svg" alt="Logo" width="56">
             <h1>Password Generator</h1>
 
             <form method="post">
@@ -204,50 +274,6 @@ def home():
             const label = document.getElementById("strength-label");
             const bar = document.getElementById("strength-bar");
 
-            // Slowly scroll to the generated password.
-            if (password) {
-                window.addEventListener("load", function () {
-                    const target = document.getElementById("result");
-                    const startPosition = window.scrollY;
-
-                    const targetPosition =
-                        target.getBoundingClientRect().top
-                        + window.scrollY
-                        - (window.innerHeight / 2)
-                        + (target.offsetHeight / 2);
-
-                    const distance = targetPosition - startPosition;
-                    const duration = 2000;
-                    let startTime = null;
-
-                    function animateScroll(currentTime) {
-                        if (startTime === null) {
-                            startTime = currentTime;
-                        }
-
-                        const elapsed = currentTime - startTime;
-                        const progress = Math.min(elapsed / duration, 1);
-
-                        const easedProgress =
-                            progress < 0.5
-                                ? 4 * progress * progress * progress
-                                : 1 - Math.pow(-2 * progress + 2, 3) / 2;
-
-                        window.scrollTo(
-                            0,
-                            startPosition + distance * easedProgress
-                        );
-
-                        if (progress < 1) {
-                            requestAnimationFrame(animateScroll);
-                        }
-                    }
-
-                    requestAnimationFrame(animateScroll);
-                });
-            }
-
-            // Display the password strength meter.
             if (password) {
                 let score = 0;
 
