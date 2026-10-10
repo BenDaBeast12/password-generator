@@ -129,72 +129,96 @@ def home():
 
             .container {
                 width: 100%;
-                max-width: 360px;
-                padding: 22px;
-                gap: 10px;
+                max-width: 420px;
+                padding: 26px;
+                gap: 12px;
             }
 
             .container img {
-                width: 56px;
+                width: 62px;
                 height: auto;
             }
 
             h1 {
-                font-size: 24px;
-                margin: 4px 0 8px;
+                font-size: 29px;
+                margin: 5px 0 10px;
             }
 
             form {
-                gap: 6px;
+                gap: 8px;
             }
 
             label {
-                font-size: 13px;
-                margin-bottom: 2px;
+                font-size: 15px;
+                margin-bottom: 3px;
             }
 
             select,
             input {
-                padding: 9px;
-                font-size: 14px;
+                padding: 11px;
+                font-size: 16px;
             }
 
             button {
-                padding: 10px 12px;
-                font-size: 14px;
+                padding: 12px 14px;
+                font-size: 16px;
             }
 
             .result {
-                margin-top: 4px;
+                margin-top: 5px;
             }
 
             .password-row {
-                gap: 6px;
+                gap: 7px;
             }
 
             #copy-status {
                 min-height: 0;
-                margin: 3px 0;
-                font-size: 12px;
+                margin: 4px 0;
+                font-size: 13px;
             }
 
             .strength-section {
-                margin-top: 4px;
+                margin-top: 5px;
             }
 
             .strength-heading {
-                font-size: 13px;
-                margin-bottom: 6px;
+                font-size: 15px;
+                margin-bottom: 7px;
             }
 
             .strength-track {
-                height: 7px;
+                height: 8px;
+            }
+
+            @media (max-height: 700px) {
+                .container {
+                    padding: 18px;
+                    gap: 8px;
+                }
+
+                .container img {
+                    width: 50px;
+                }
+
+                h1 {
+                    font-size: 25px;
+                    margin: 2px 0 6px;
+                }
+
+                form {
+                    gap: 5px;
+                }
+
+                .strength-section {
+                    margin-top: 2px;
+                }
             }
         </style>
     </head>
     <body>
         <div class="container">
-            <img src="/static/logo.svg" alt="Logo" width="56">
+            <img src="/static/logo.svg" alt="Logo" width="62">
             <h1>Password Generator</h1>
 
             <form method="post">
@@ -269,6 +293,8 @@ def home():
                             "Automatic copying failed. Press Ctrl+C to copy.";
                     });
             }
+
+            // No automatic scrolling.
 
             const password = document.getElementById("password-output").value;
             const label = document.getElementById("strength-label");
