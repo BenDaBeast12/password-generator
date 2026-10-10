@@ -33,7 +33,8 @@ def home():
     </head>
     <body>
         <div class="container">
-            <h1>Password Generator</h1>
+            <img src="/static/logo.png" alt="Logo" width="80">
+<h1>Password Generator</h1>
             <form method="post">
                 <label for="strength">Password strength</label>
                 <select name="strength" id="strength">
