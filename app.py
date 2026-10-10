@@ -1,5 +1,4 @@
 from flask import Flask, request
-import random
 import string
 import secrets
 import html
@@ -16,21 +15,60 @@ def home():
     if request.method == "POST":
         strength = request.form.get("strength", "medium")
 
+        if strength not in ("easy", "medium", "hard"):
+            strength = "medium"
+
         try:
             length = max(5, min(10, int(request.form.get("length", 8))))
-        except ValueError:
+        except (ValueError, TypeError):
             length = 8
+
+        password_chars = []
 
         if strength == "easy":
             characters = string.ascii_lowercase
+
+            password_chars = [
+                secrets.choice(characters)
+                for _ in range(length)
+            ]
+
         elif strength == "medium":
             characters = string.ascii_letters + string.digits
-        else:
-            characters = string.ascii_letters + string.digits + "!@#$%&*?"
 
-        password = "".join(
-            secrets.choice(characters) for _ in range(length)
-        )
+            # Guarantee at least 2 uppercase letters and 1 number
+            password_chars = [
+                secrets.choice(string.ascii_uppercase),
+                secrets.choice(string.ascii_uppercase),
+                secrets.choice(string.digits)
+            ]
+
+            password_chars.extend(
+                secrets.choice(characters)
+                for _ in range(length - 3)
+            )
+
+        else:
+            characters = (
+                string.ascii_letters
+                + string.digits
+                + "!@#$%&*?"
+            )
+
+            # Guarantee at least 1 number and 1 special symbol
+            password_chars = [
+                secrets.choice(string.digits),
+                secrets.choice("!@#$%&*?")
+            ]
+
+            password_chars.extend(
+                secrets.choice(characters)
+                for _ in range(length - 2)
+            )
+
+        # Shuffle so the required characters aren't always at the start
+        secrets.SystemRandom().shuffle(password_chars)
+        password = "".join(password_chars)
 
     safe_password = html.escape(password)
 
@@ -116,6 +154,7 @@ def home():
                     .then(() => {
                         status.textContent = "Password copied!";
                         button.textContent = "Copied!";
+
                         setTimeout(() => {
                             button.textContent = "Copy";
                             status.textContent = "";
@@ -134,6 +173,7 @@ def home():
 
             if (password) {
                 let score = 0;
+
                 if (password.length >= 8) score++;
                 if (/[a-z]/.test(password) && /[A-Z]/.test(password)) score++;
                 if (/[0-9]/.test(password)) score++;
@@ -164,6 +204,10 @@ def home():
     </body>
     </html>
     """
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
 
 
 if __name__ == "__main__":
