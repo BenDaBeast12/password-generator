@@ -68,7 +68,6 @@ def home():
         elif strength == "medium":
             characters = string.ascii_letters + string.digits
 
-            # At least 1 uppercase, 1 lowercase and 1 number
             password_chars = [
                 secrets.choice(string.ascii_uppercase),
                 secrets.choice(string.ascii_lowercase),
@@ -87,7 +86,6 @@ def home():
                 + SPECIAL_CHARS
             )
 
-            # At least 1 uppercase, 1 lowercase, 1 number and 1 symbol
             password_chars = [
                 secrets.choice(string.ascii_uppercase),
                 secrets.choice(string.ascii_lowercase),
@@ -202,31 +200,55 @@ def home():
                     });
             }
 
-            // Scroll to the generated password after the page loads.
             const password = document.getElementById("password-output").value;
-
-            if (password) {
-                window.addEventListener("load", function () {
-                    document.getElementById("result").scrollIntoView({
-                        behavior: "smooth",
-                        block: "center"
-                    });
-                });
-            }
-
             const label = document.getElementById("strength-label");
             const bar = document.getElementById("strength-bar");
 
+            // Slowly scroll to the generated password.
             if (password) {
-                const result = getMeter(password);
+                window.addEventListener("load", function () {
+                    const target = document.getElementById("result");
+                    const startPosition = window.scrollY;
 
-                label.textContent = result.label;
-                label.className = result.cssClass;
-                bar.className = result.cssClass;
-                bar.style.width = result.width;
+                    const targetPosition =
+                        target.getBoundingClientRect().top
+                        + window.scrollY
+                        - (window.innerHeight / 2)
+                        + (target.offsetHeight / 2);
+
+                    const distance = targetPosition - startPosition;
+                    const duration = 2000;
+                    let startTime = null;
+
+                    function animateScroll(currentTime) {
+                        if (startTime === null) {
+                            startTime = currentTime;
+                        }
+
+                        const elapsed = currentTime - startTime;
+                        const progress = Math.min(elapsed / duration, 1);
+
+                        const easedProgress =
+                            progress < 0.5
+                                ? 4 * progress * progress * progress
+                                : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+
+                        window.scrollTo(
+                            0,
+                            startPosition + distance * easedProgress
+                        );
+
+                        if (progress < 1) {
+                            requestAnimationFrame(animateScroll);
+                        }
+                    }
+
+                    requestAnimationFrame(animateScroll);
+                });
             }
 
-            function getMeter(password) {
+            // Display the password strength meter.
+            if (password) {
                 let score = 0;
 
                 if (password.length >= 8) score++;
@@ -234,17 +256,34 @@ def home():
                 if (/[0-9]/.test(password)) score++;
                 if (/[^a-zA-Z0-9]/.test(password)) score++;
 
+                let level, cssClass, width;
+
                 if (score === 0) {
-                    return {label: "Super weak", cssClass: "weak", width: "10%"};
+                    level = "Super weak";
+                    cssClass = "weak";
+                    width = "10%";
                 } else if (score === 1) {
-                    return {label: "Weak", cssClass: "weak", width: "25%"};
+                    level = "Weak";
+                    cssClass = "weak";
+                    width = "25%";
                 } else if (score === 2) {
-                    return {label: "Normal", cssClass: "medium", width: "45%"};
+                    level = "Normal";
+                    cssClass = "medium";
+                    width = "45%";
                 } else if (score === 3) {
-                    return {label: "Good", cssClass: "medium", width: "70%"};
+                    level = "Good";
+                    cssClass = "medium";
+                    width = "70%";
                 } else {
-                    return {label: "Very good", cssClass: "strong", width: "100%"};
+                    level = "Very good";
+                    cssClass = "strong";
+                    width = "100%";
                 }
+
+                label.textContent = level;
+                label.className = cssClass;
+                bar.className = cssClass;
+                bar.style.width = width;
             }
         </script>
     </body>
