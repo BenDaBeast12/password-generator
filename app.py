@@ -1,4 +1,3 @@
-```python
 from flask import Flask, request
 import random
 import string
@@ -169,4 +168,3 @@ def home():
 
 if __name__ == "__main__":
     app.run(debug=True)
-```
