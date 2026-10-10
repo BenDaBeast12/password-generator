@@ -32,7 +32,7 @@ def home():
     </head>
     <body>
         <div class="container">
-            <img src="/static/logo.png" alt="Logo" width="80">
+            <img src="/static/logo.svg" alt="Logo" width="80">
 <h1>Password Generator</h1>
             <form method="post">
                 <label for="strength">Password strength</label>
