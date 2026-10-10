@@ -1,67 +1,77 @@
-* {
-    box-sizing: border-box;
+.result,
+.strength-section {
+    margin-top: 24px;
+    text-align: left;
 }
 
-body {
-    margin: 0;
-    min-height: 100vh;
+.password-row {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    font-family: Arial, sans-serif;
-    background: #0f172a;
-    color: #f8fafc;
+    gap: 8px;
+    align-items: stretch;
 }
 
-.container {
-    width: 90%;
-    max-width: 450px;
-    padding: 35px;
-    background: #1e293b;
-    border: 1px solid #334155;
-    border-radius: 18px;
-    box-shadow: 0 15px 40px #0005;
+.password-row input {
+    flex: 1;
+    min-width: 0;
 }
 
-h1 {
-    text-align: center;
-    color: #38bdf8;
+.password-row button {
+    width: auto;
+    white-space: nowrap;
 }
 
-label {
-    display: block;
-    margin: 18px 0 8px;
+#copy-status {
+    min-height: 18px;
+    font-size: 13px;
+    margin: 8px 0 0;
 }
 
-select,
-input {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #475569;
-    border-radius: 8px;
-    background: #0f172a;
-    color: white;
-    font-size: 16px;
+.strength-heading {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 14px;
+    margin-bottom: 10px;
 }
 
-button {
-    width: 100%;
-    margin-top: 22px;
-    padding: 13px;
-    border: none;
-    border-radius: 8px;
-    background: #0284c7;
-    color: white;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
+.strength-track {
+    height: 8px;
+    background: #334155;
+    border-radius: 10px;
+    overflow: hidden;
 }
 
-button:hover {
-    background: #0369a1;
+#strength-bar {
+    height: 100%;
+    width: 0;
+    border-radius: 10px;
+    transition: width 0.3s ease;
 }
 
-h2 {
+.weak {
+    color: #f87171;
+}
+
+#strength-bar.weak {
+    background: #ef4444;
+}
+
+.medium {
+    color: #fbbf24;
+}
+
+#strength-bar.medium {
+    background: #f59e0b;
+}
+
+.strong {
+    color: #4ade80;
+}
+
+#strength-bar.strong {
+    background: #22c55e;
+}
+```h2 {
     overflow-wrap: anywhere;
     text-align: center;
     color: #4ade80;
