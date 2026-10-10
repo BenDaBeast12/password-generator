@@ -1,3 +1,4 @@
+
 from flask import Flask, request
 import string
 import secrets
@@ -6,6 +7,35 @@ import html
 app = Flask(__name__)
 
 SPECIAL_CHARS = "!@#$%&*?"
+
+
+def get_strength_meter(password):
+    score = 0
+
+    if len(password) >= 8:
+        score += 1
+
+    if any(c.islower() for c in password) and any(
+        c.isupper() for c in password
+    ):
+        score += 1
+
+    if any(c.isdigit() for c in password):
+        score += 1
+
+    if any(c in SPECIAL_CHARS for c in password):
+        score += 1
+
+    if score == 0:
+        return "Super weak", "weak", "10%"
+    elif score == 1:
+        return "Weak", "weak", "25%"
+    elif score == 2:
+        return "Normal", "medium", "45%"
+    elif score == 3:
+        return "Good", "medium", "70%"
+    else:
+        return "Very good", "strong", "100%"
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -21,14 +51,18 @@ def home():
             strength = "medium"
 
         try:
-            length = max(5, min(10, int(request.form.get("length", 8))))
+            length = max(
+                5, min(10, int(request.form.get("length", 8)))
+            )
         except (ValueError, TypeError):
             length = 8
 
         if strength == "easy":
             characters = string.ascii_lowercase
+
             password_chars = [
-                secrets.choice(characters) for _ in range(length)
+                secrets.choice(characters)
+                for _ in range(length)
             ]
 
         elif strength == "medium":
@@ -42,7 +76,8 @@ def home():
             ]
 
             password_chars.extend(
-                secrets.choice(characters) for _ in range(length - 3)
+                secrets.choice(characters)
+                for _ in range(length - 3)
             )
 
         else:
@@ -61,7 +96,8 @@ def home():
             ]
 
             password_chars.extend(
-                secrets.choice(characters) for _ in range(length - 4)
+                secrets.choice(characters)
+                for _ in range(length - 4)
             )
 
         secrets.SystemRandom().shuffle(password_chars)
@@ -94,7 +130,7 @@ def home():
             <h1>Password Generator</h1>
 
             <form method="post">
-                <label for="strength">Password type</label>
+                <label for="strength">Password strength</label>
                 <select name="strength" id="strength">
                     <option value="easy" """ + (
                         'selected' if strength == 'easy' else ''
@@ -114,7 +150,7 @@ def home():
                 <button type="submit">Generate Password</button>
             </form>
 
-            <div class="result">
+            <div class="result" id="result">
                 <label for="password-output">Your password</label>
                 <div class="password-row">
                     <input id="password-output" type="text"
@@ -126,7 +162,7 @@ def home():
                 <p id="copy-status" aria-live="polite"></p>
             </div>
 
-            <div class="strength-section">
+            <div class="strength-section" id="strength-meter">
                 <div class="strength-heading">
                     <span>Password strength</span>
                     <span id="strength-label" class=\"""" + meter_class + """\">""" + meter_label + """</span>
@@ -166,11 +202,31 @@ def home():
                     });
             }
 
+            // Scroll to the generated password after the page loads.
             const password = document.getElementById("password-output").value;
+
+            if (password) {
+                window.addEventListener("load", function () {
+                    document.getElementById("result").scrollIntoView({
+                        behavior: "smooth",
+                        block: "center"
+                    });
+                });
+            }
+
             const label = document.getElementById("strength-label");
             const bar = document.getElementById("strength-bar");
 
             if (password) {
+                const result = getMeter(password);
+
+                label.textContent = result.label;
+                label.className = result.cssClass;
+                bar.className = result.cssClass;
+                bar.style.width = result.width;
+            }
+
+            function getMeter(password) {
                 let score = 0;
 
                 if (password.length >= 8) score++;
@@ -178,65 +234,22 @@ def home():
                 if (/[0-9]/.test(password)) score++;
                 if (/[^a-zA-Z0-9]/.test(password)) score++;
 
-                let level, cssClass, width;
-
                 if (score === 0) {
-                    level = "Super weak";
-                    cssClass = "weak";
-                    width = "10%";
+                    return {label: "Super weak", cssClass: "weak", width: "10%"};
                 } else if (score === 1) {
-                    level = "Weak";
-                    cssClass = "weak";
-                    width = "25%";
+                    return {label: "Weak", cssClass: "weak", width: "25%"};
                 } else if (score === 2) {
-                    level = "Normal";
-                    cssClass = "medium";
-                    width = "45%";
+                    return {label: "Normal", cssClass: "medium", width: "45%"};
                 } else if (score === 3) {
-                    level = "Good";
-                    cssClass = "medium";
-                    width = "70%";
+                    return {label: "Good", cssClass: "medium", width: "70%"};
                 } else {
-                    level = "Very good";
-                    cssClass = "strong";
-                    width = "100%";
+                    return {label: "Very good", cssClass: "strong", width: "100%"};
                 }
-
-                label.textContent = level;
-                label.className = cssClass;
-                bar.className = cssClass;
-                bar.style.width = width;
             }
         </script>
     </body>
     </html>
     """
-
-
-def get_strength_meter(password):
-    score = 0
-
-    if len(password) >= 8:
-        score += 1
-    if any(c.islower() for c in password) and any(
-        c.isupper() for c in password
-    ):
-        score += 1
-    if any(c.isdigit() for c in password):
-        score += 1
-    if any(c in SPECIAL_CHARS for c in password):
-        score += 1
-
-    if score == 0:
-        return "Super weak", "weak", "10%"
-    elif score == 1:
-        return "Weak", "weak", "25%"
-    elif score == 2:
-        return "Normal", "medium", "45%"
-    elif score == 3:
-        return "Good", "medium", "70%"
-    else:
-        return "Very good", "strong", "100%"
 
 
 if __name__ == "__main__":
