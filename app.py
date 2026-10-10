@@ -129,39 +129,39 @@ def home():
 
             .container {
                 width: 100%;
-                max-width: 420px;
-                padding: 26px;
-                gap: 12px;
+                max-width: 414px;
+                padding: 25px;
+                gap: 11px;
             }
 
             .container img {
-                width: 62px;
+                width: 59px;
                 height: auto;
             }
 
             h1 {
-                font-size: 29px;
-                margin: 5px 0 10px;
+                font-size: 27px;
+                margin: 5px 0 9px;
             }
 
             form {
-                gap: 8px;
+                gap: 7px;
             }
 
             label {
-                font-size: 15px;
+                font-size: 14px;
                 margin-bottom: 3px;
             }
 
             select,
             input {
-                padding: 11px;
-                font-size: 16px;
+                padding: 10px;
+                font-size: 15px;
             }
 
             button {
-                padding: 12px 14px;
-                font-size: 16px;
+                padding: 11px 13px;
+                font-size: 15px;
             }
 
             .result {
@@ -175,7 +175,7 @@ def home():
             #copy-status {
                 min-height: 0;
                 margin: 4px 0;
-                font-size: 13px;
+                font-size: 12px;
             }
 
             .strength-section {
@@ -183,7 +183,7 @@ def home():
             }
 
             .strength-heading {
-                font-size: 15px;
+                font-size: 14px;
                 margin-bottom: 7px;
             }
 
@@ -218,7 +218,7 @@ def home():
     </head>
     <body>
         <div class="container">
-            <img src="/static/logo.svg" alt="Logo" width="62">
+            <img src="/static/logo.svg" alt="Logo" width="59">
             <h1>Password Generator</h1>
 
             <form method="post">
@@ -294,7 +294,7 @@ def home():
                     });
             }
 
-            // No automatic scrolling.
+            // Automatic scrolling is disabled.
 
             const password = document.getElementById("password-output").value;
             const label = document.getElementById("strength-label");
@@ -342,6 +342,9 @@ def home():
     </html>
     """
 
+
+if __name__ == "__main__":
+    app.run(debug=True)
 
 if __name__ == "__main__":
     app.run(debug=True)
