@@ -45,6 +45,7 @@ HTML = """
     <meta name="theme-color" content="#0f172a">
 
     <meta name="google-site-verification" content="5iMg0IsWd16Ain6f7A1289I_mOG8PaDKDfBjyF7uig4" />
+    <meta name="google-adsense-account" content="ca-pub-6355414723132442">
 
     <link rel="icon" type="image/svg+xml" href="/static/logo.svg">
 
